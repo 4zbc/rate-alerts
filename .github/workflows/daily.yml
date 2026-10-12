@@ -1,0 +1,37 @@
+name: daily rate alerts
+
+on:
+  schedule:
+    - cron: "0 16 * * 1-5"   # 16:00 UTC, weekdays
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Restore history
+        uses: actions/cache@v4
+        with:
+          path: rates.sqlite
+          key: rates-db-${{ github.run_id }}
+          restore-keys: rates-db-
+      - name: Run pipeline
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          python - <<'PY'
+          import json, os
+          cfg = json.load(open("config.json"))
+          cfg["webhook_url"] = os.environ.get("WEBHOOK_URL", "")
+          json.dump(cfg, open("ci.json", "w"))
+          PY
+          python rate_alerts.py --config ci.json -v
+      - name: Upload CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: rates-csv
+          path: rates.csv

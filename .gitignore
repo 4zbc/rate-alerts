@@ -1,0 +1,4 @@
+rates.sqlite
+rates.csv
+ci.json
+__pycache__/

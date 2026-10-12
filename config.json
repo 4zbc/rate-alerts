@@ -1,0 +1,11 @@
+{
+  "api_url": "https://api.frankfurter.app/latest",
+  "base": "EUR",
+  "symbols": ["USD", "GBP", "CHF", "TRY", "JPY"],
+  "alert_threshold_pct": 0.5,
+  "db_path": "rates.sqlite",
+  "csv_path": "rates.csv",
+  "webhook_url": "",
+  "retries": 3,
+  "timeout_seconds": 15
+}
